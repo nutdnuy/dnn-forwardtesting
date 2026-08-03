@@ -11,7 +11,9 @@ It separates two decisions:
 
 The package also selects a traditional-backtest strategy on the historical lookback window so the two selection methods can be compared fairly.
 
-Step-by-step tutorial: [`voo-ema20-200-webull-tutorial.ipynb`](output/jupyter-notebook/voo-ema20-200-webull-tutorial.ipynb). It demonstrates read-only Webull VOO daily-bar loading, EMA 20/200 crossover signals, next-bar backtesting, audit checks, and a 50/200 exercise. It runs in offline demo mode by default; live mode requires local Webull credentials.
+Step-by-step tutorial: [`voo-ema20-200-webull-tutorial.ipynb`](output/jupyter-notebook/voo-ema20-200-webull-tutorial.ipynb). It demonstrates read-only Webull VOO daily-bar loading, EMA 20/200 crossover signals, next-bar backtesting, audit checks, and a 50/200 exercise. It runs in offline demo mode by default; live mode supports Webull Thailand (`WEBULL_ENV=th`, `WEBULL_REGION=th`) after token verification in the Webull App.
+
+Verified live run: [`voo-ema20-200-webull-tutorial.executed.ipynb`](output/jupyter-notebook/voo-ema20-200-webull-tutorial.executed.ipynb) contains the executed, read-only Webull Thailand VOO result using 1,200 daily bars from 2021-10-19 through 2026-07-31. It contains rendered metrics and charts only; credentials, access tokens, and the downloaded CSV remain local and gitignored.
 
 ## Install
 

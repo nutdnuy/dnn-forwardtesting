@@ -114,23 +114,26 @@ def build() -> None:
 
         ```bash
         export WEBULL_TUTORIAL_LIVE=1
-        export WEBULL_ENV=prod
-        export WEBULL_REGION=us
+        # Webull Thailand App Key/App Secret
+        export WEBULL_ENV=th
+        export WEBULL_REGION=th
         export WEBULL_APP_KEY="your_app_key"
         export WEBULL_APP_SECRET="your_app_secret"
-        export WEBULL_TOKEN_DIR="data/private/.webull-token-voo"
+        export WEBULL_TOKEN_DIR="data/private/.webull-token-voo-th"
         jupyter lab
         ```
 
-        ใช้ `prod` สำหรับ VOO เพราะ UAT/test credential ของ Webull มักจำกัด symbol และสิทธิ์ข้อมูล ETF
+        สำหรับ App Key ที่สร้างจาก Webull Thailand ให้ใช้ `WEBULL_ENV=th` และ `WEBULL_REGION=th`.
+        การสร้าง token ครั้งแรกอาจต้องยืนยันรหัส SMS ใน Webull App ก่อน จึงจะเรียก market-data ได้.
+        `uat` และ `prod` คงไว้สำหรับ Webull US credentials ที่ตรงกับ endpoint นั้น ๆ.
         อย่าใส่ key หรือ secret ลงใน Notebook, Git, screenshot หรือ output
         '''),
         cell("code", r'''
-        WEBULL_ENV = os.getenv("WEBULL_ENV", "prod").lower()
-        WEBULL_REGION = os.getenv("WEBULL_REGION", "us").lower()
+        WEBULL_ENV = os.getenv("WEBULL_ENV", "th").lower()
+        WEBULL_REGION = os.getenv("WEBULL_REGION", "th" if WEBULL_ENV == "th" else "us").lower()
         WEBULL_APP_KEY = os.getenv("WEBULL_APP_KEY", "")
         WEBULL_APP_SECRET = os.getenv("WEBULL_APP_SECRET", "")
-        WEBULL_TOKEN_DIR = Path(os.getenv("WEBULL_TOKEN_DIR", str(DATA_DIR / ".webull-token-voo")))
+        WEBULL_TOKEN_DIR = Path(os.getenv("WEBULL_TOKEN_DIR", str(DATA_DIR / ".webull-token-voo-th")))
 
         credential_status = pd.Series({
             "live_mode": USE_LIVE_WEBULL,
@@ -159,6 +162,7 @@ def build() -> None:
         '''),
         cell("code", r'''
         WEBULL_ENDPOINTS = {
+            "th": "api.webull.co.th",
             "uat": "us-openapi-alb.uat.webullbroker.com",
             "prod": "api.webull.com",
         }
@@ -184,19 +188,30 @@ def build() -> None:
             try:
                 from webull.core.client import ApiClient
                 from webull.data.data_client import DataClient
+                from webull.data.quotes.market_data import MarketData
             except ImportError as exc:
                 raise RuntimeError("Install the optional Webull dependency: pip install -e '.[webull]'") from exc
 
             if WEBULL_ENV not in WEBULL_ENDPOINTS:
-                raise ValueError("WEBULL_ENV must be 'uat' or 'prod'")
+                raise ValueError("WEBULL_ENV must be 'th', 'uat', or 'prod'")
             WEBULL_TOKEN_DIR.mkdir(parents=True, exist_ok=True)
             api_client = ApiClient(WEBULL_APP_KEY, WEBULL_APP_SECRET, WEBULL_REGION)
             api_client.add_endpoint(WEBULL_REGION, WEBULL_ENDPOINTS[WEBULL_ENV])
             api_client.set_token_dir(str(WEBULL_TOKEN_DIR))
             silence_webull_logging(api_client)
-            data_client = DataClient(api_client)
 
-            response = data_client.market_data.get_history_bar(
+            # Reuse a locally verified token when it exists. Calling DataClient always
+            # requests token creation/verification again, which can trigger unnecessary
+            # 2FA prompts in the Webull Thailand flow.
+            token_file = WEBULL_TOKEN_DIR / "token.txt"
+            token_lines = token_file.read_text(encoding="utf-8").splitlines() if token_file.exists() else []
+            if len(token_lines) >= 3 and token_lines[0] and token_lines[2] == "NORMAL":
+                api_client.set_token(token_lines[0])
+                market_data = MarketData(api_client)
+            else:
+                market_data = DataClient(api_client).market_data
+
+            response = market_data.get_history_bar(
                 symbol.upper(),
                 "US_ETF",
                 "D",
