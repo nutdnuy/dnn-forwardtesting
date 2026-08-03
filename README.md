@@ -15,6 +15,8 @@ Step-by-step tutorial: [`voo-ema20-200-webull-tutorial.ipynb`](output/jupyter-no
 
 Verified live run: [`voo-ema20-200-webull-tutorial.executed.ipynb`](output/jupyter-notebook/voo-ema20-200-webull-tutorial.executed.ipynb) contains the executed, read-only Webull Thailand VOO result using 1,200 daily bars from 2021-10-19 through 2026-07-31. It includes NAV, drawdown, rolling risk, a monthly-return heatmap, and an isolated traditional-vs-forward selection comparison. It contains rendered metrics and charts only; credentials, access tokens, and the downloaded CSV remain local and gitignored.
 
+Visual companion: [`dnn-forwardtesting-webull-visual-lab.ipynb`](output/jupyter-notebook/dnn-forwardtesting-webull-visual-lab.ipynb) teaches the paper's workflow with paper-inspired OHLC candlesticks, four historical-volatility estimators, a 30-day cutoff/OOS split, forecast-versus-actual diagnostics, candidate-selection charts, and actual OOS NAV/drawdown. Its verified live output is [`dnn-forwardtesting-webull-visual-lab.executed.ipynb`](output/jupyter-notebook/dnn-forwardtesting-webull-visual-lab.executed.ipynb). It uses the same read-only Webull Thailand data path, and publishes neither credentials nor downloaded data.
+
 ## Install
 
 ```bash
