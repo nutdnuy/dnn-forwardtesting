@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dnn-forwardtesting"
+version = "0.1.0"
+description = "Research-only DNN forward-testing framework for OHLCV strategy selection."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Nuthdanai Wangpratham"}]
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+ml = ["torch>=2.2"]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+all = ["torch>=2.2", "pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+dnn-forwardtesting = "dnn_forwardtesting.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
