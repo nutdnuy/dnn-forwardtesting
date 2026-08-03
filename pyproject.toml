@@ -17,8 +17,9 @@ dependencies = [
 
 [project.optional-dependencies]
 ml = ["torch>=2.2"]
+webull = ["webull-openapi-python-sdk>=2.0.12"]
 dev = ["pytest>=8.0", "ruff>=0.5"]
-all = ["torch>=2.2", "pytest>=8.0", "ruff>=0.5"]
+all = ["torch>=2.2", "webull-openapi-python-sdk>=2.0.12", "pytest>=8.0", "ruff>=0.5"]
 
 [project.scripts]
 dnn-forwardtesting = "dnn_forwardtesting.cli:main"

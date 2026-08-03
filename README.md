@@ -11,6 +11,8 @@ It separates two decisions:
 
 The package also selects a traditional-backtest strategy on the historical lookback window so the two selection methods can be compared fairly.
 
+Step-by-step tutorial: [`voo-ema20-200-webull-tutorial.ipynb`](output/jupyter-notebook/voo-ema20-200-webull-tutorial.ipynb). It demonstrates read-only Webull VOO daily-bar loading, EMA 20/200 crossover signals, next-bar backtesting, audit checks, and a 50/200 exercise. It runs in offline demo mode by default; live mode requires local Webull credentials.
+
 ## Install
 
 ```bash
